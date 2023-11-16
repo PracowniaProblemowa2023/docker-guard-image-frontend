@@ -7,12 +7,12 @@ export default function ViewTemplate({ children, isLogged }) {
   return (
     <ErrorBoundary>
       <NavigationBar isLogged={isLogged} />
-      <div className="flex flex-col min-h-screen max-w-7xl mx-auto">
+      <div className="flex flex-col max-w-7xl mx-auto">
         <div className="flex-grow mt-40">{children}</div>
-        <div className="flex items-center justify-center mt-auto mb-0 p-2 text-xs">
-          Copyright © 2023 &nbsp;<span className="text-red-normal"> DOCKER IMAGE GUARD</span>. All
-          Rights Reserved. Made In Poland.
-        </div>
+      </div>
+      <div className="absolute bottom-0 left-0 right-0 flex items-center justify-center pb-2 text-xs">
+        Copyright © 2023 &nbsp;<span className="text-red-normal"> DOCKER IMAGE GUARD</span>. All
+        Rights Reserved. Made In Poland.
       </div>
     </ErrorBoundary>
   );
