@@ -9,5 +9,14 @@ export const ROUTES = {
   SCANNER: '/scanner',
   RESULTS: '/results',
   HISTORY: '/history',
-  PROFILE: '/profile/:userId'
+  PROFILE: '/profile/:userId',
+  NOT_FOUND: '*'
+};
+
+export const ERROR = {
+  NOT_FOUND: 404,
+  UNAUTHENTICATED: 401,
+  UNAUTHORIZED: 403,
+  INTERNAL_SERVER_ERROR: 500,
+  UNKNOWN: 'UNKNOWN'
 };

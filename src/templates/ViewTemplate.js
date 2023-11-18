@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import NavigationBar from '../navigation/NavigationBar';
-import ErrorBoundary from './ErrorBoundary';
 
 export default function ViewTemplate({ children, isLogged }) {
   return (
-    <ErrorBoundary>
+    <>
       <NavigationBar isLogged={isLogged} />
       <div className="flex flex-col max-w-7xl mx-auto">
         <div className="flex-grow mt-40">{children}</div>
@@ -14,7 +13,7 @@ export default function ViewTemplate({ children, isLogged }) {
         Copyright © 2023 &nbsp;<span className="text-red-normal"> DOCKER IMAGE GUARD</span>. All
         Rights Reserved. Made In Poland.
       </div>
-    </ErrorBoundary>
+    </>
   );
 }
 
