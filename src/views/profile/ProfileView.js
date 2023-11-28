@@ -21,11 +21,13 @@ export default function ProfileView() {
             </div>
           </div>
           <br></br>
-          <p>You can also delete your account, but remember, that all your scan history will be irreversibly lost.</p>
-          <button
-              className="bg-gray-400 text-white rounded-sm w-44 h-12 hover:bg-red-light transition duration-300">
-              DELETE ACCOUNT
-            </button>
+          <p>
+            You can also delete your account, but remember, that all your scan history will be
+            irreversibly lost.
+          </p>
+          <button className="bg-gray-400 text-white rounded-sm w-44 h-12 hover:bg-red-light transition duration-300">
+            DELETE ACCOUNT
+          </button>
         </div>
       </div>
     </ViewTemplate>
