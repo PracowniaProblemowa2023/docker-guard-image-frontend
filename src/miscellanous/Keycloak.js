@@ -1,5 +1,7 @@
 import Keycloak from 'keycloak-js';
 
+const DEBUG = 0;
+
 // Setup Keycloak instance as needed
 // Pass initialization options as required or leave blank to load from 'keycloak.json'
 export const keycloak = new Keycloak({
@@ -9,9 +11,13 @@ export const keycloak = new Keycloak({
 });
 
 export const eventLogger = (event, error) => {
-  console.log('onKeycloakEvent', event, error);
+  if (DEBUG === 1) {
+    console.log('onKeycloakEvent', event, error);
+  }
 };
 
 export const tokenLogger = (tokens) => {
-  console.log('onKeycloakTokens', tokens);
+  if (DEBUG === 1) {
+    console.log('onKeycloakTokens', tokens);
+  }
 };

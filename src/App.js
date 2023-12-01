@@ -15,19 +15,22 @@ import { ROUTES } from './miscellanous/Constants';
 import ErrorPage from './errors/ErrorPage';
 import { useKeycloak } from '@react-keycloak/web';
 import AppTemplate from './templates/AppTemplate';
+import Spinner from './miscellanous/Components';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route element={<AppTemplate />} errorElement={<ErrorPage />}>
-      <Route path={ROUTES.WELCOME} element={<WelcomeView />} errorElement={<ErrorPage />} />
-      <Route element={<ProtectedRoute />}>
-        <Route path={ROUTES.SCANNER} element={<ScannerView />} errorElement={<ErrorPage />} />
-        <Route path={ROUTES.RESULTS} element={<ResultsView />} errorElement={<ErrorPage />} />
-        <Route path={ROUTES.HISTORY} element={<HistoryView />} errorElement={<ErrorPage />} />
-        <Route path={ROUTES.PROFILE} element={<ProfileView />} errorElement={<ErrorPage />} />
+    <>
+      <Route element={<AppTemplate />} errorElement={<ErrorPage />}>
+        <Route path={ROUTES.WELCOME} element={<WelcomeView />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path={ROUTES.SCANNER} element={<ScannerView />} />
+          <Route path={ROUTES.RESULTS} element={<ResultsView />} />
+          <Route path={ROUTES.HISTORY} element={<HistoryView />} />
+          <Route path={ROUTES.PROFILE} element={<ProfileView />} />
+        </Route>
       </Route>
       <Route path={ROUTES.NOT_FOUND} element={<ErrorPage notFound={true} />} />
-    </Route>
+    </>
   )
 );
 
@@ -35,7 +38,7 @@ export default function App() {
   const { initialized } = useKeycloak();
 
   if (!initialized) {
-    return <h1>Loading...</h1>;
+    return <Spinner />;
   }
 
   return <RouterProvider router={router} />;
