@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ROUTES } from '../miscellanous/Constants';
 import logo from '../assets/svg/app-logo.svg';
+import { useKeycloak } from '@react-keycloak/web';
 
-export default function NavigationBar({ isLogged }) {
+export default function NavigationBar() {
   const [activeView, setActiveView] = useState('');
-  const navigate = useNavigate();
+  const { keycloak } = useKeycloak();
   const location = useLocation();
+  let isLogged = location.pathname != ROUTES.WELCOME;
 
   let notSelectedColor = 'text-white';
   let selectedColor = 'text-red-normal';
@@ -35,9 +37,9 @@ export default function NavigationBar({ isLogged }) {
     setActiveView(currentView);
   }, [location.pathname]);
 
-  function onLogout() {
-    return navigate(ROUTES.WELCOME);
-  }
+  const login = useCallback(() => {
+    keycloak?.login();
+  }, [keycloak]);
 
   return (
     <header className="bg-black">
@@ -49,22 +51,16 @@ export default function NavigationBar({ isLogged }) {
         />
         <nav className="mr-0 ml-auto flex flex-row-reverse items-center gap-28">
           {!isLogged ? (
-            <>
-              <Link to={ROUTES.SCANNER}>
-                <button
-                  className={`bg-red-normal text-white rounded-sm w-44 h-12 hover:bg-red-light`}>
-                  GET STARTED
-                </button>
-              </Link>
-              <Link to={ROUTES.SCANNER}>
-                <button className="text-white text-m hover:text-red-normal">Login</button>
-              </Link>
-            </>
+            <button
+              className={`bg-red-normal text-white rounded-sm w-44 h-12 hover:bg-red-light`}
+              onClick={login}>
+              LOGIN
+            </button>
           ) : (
             <>
               <button
                 className="bg-red-normal text-white rounded-sm w-44 h-12 hover:bg-red-light"
-                onClick={onLogout}>
+                onClick={() => keycloak?.logout()}>
                 LOGOUT
               </button>
               <Link to={ROUTES.PROFILE}>

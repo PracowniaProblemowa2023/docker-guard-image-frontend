@@ -1,7 +1,7 @@
-const URL = 'http://localhost:PORT';
+const URL = 'http://localhost:8443';
 
 export const ENDPOINTS = {
-  todo: URL + '/add/endpoints'
+  PROFILE: URL + '/profile'
 };
 
 export const ROUTES = {
@@ -9,7 +9,7 @@ export const ROUTES = {
   SCANNER: '/scanner',
   RESULTS: '/results',
   HISTORY: '/history',
-  PROFILE: '/profile/:userId',
+  PROFILE: '/profile',
   NOT_FOUND: '*'
 };
 
