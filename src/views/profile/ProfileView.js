@@ -3,11 +3,12 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { ENDPOINTS } from '../../miscellanous/Constants';
 import Spinner from '../../miscellanous/Components';
-//import { ThrowError } from '../../errors/ErrorThrower';
+import { ThrowError } from '../../errors/ErrorThrower';
 
 export default function ProfileView() {
   const { keycloak } = useKeycloak();
   const [profile, setProfile] = useState(null);
+  const [errorCode, setErrorCode] = useState(null);
 
   async function getProfile() {
     await axios({
@@ -20,16 +21,19 @@ export default function ProfileView() {
     })
       .then(({ data }) => {
         setProfile(data);
-        throw new Error('Not Found', { status: 404 });
       })
       .catch((error) => {
-        console.log(error);
+        setErrorCode(error.response.status);
       });
   }
 
   useEffect(() => {
     getProfile();
   }, []);
+
+  if (errorCode) {
+    ThrowError(errorCode);
+  }
 
   return profile !== null ? (
     <div className="w-full h-74 flex flex-col justify-center">
