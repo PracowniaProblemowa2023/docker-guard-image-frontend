@@ -3,7 +3,6 @@ import shield from '../../assets/svg/shield.svg';
 import report from '../../assets/svg/report.svg';
 import file from '../../assets/svg/file.svg';
 import happy from '../../assets/svg/happy.svg';
-import { Link } from 'react-router-dom';
 import { ROUTES } from '../../miscellanous/Constants';
 import { Navigate } from 'react-router-dom';
 import { useKeycloak } from '@react-keycloak/web';
@@ -32,13 +31,11 @@ export default function WelcomeView() {
           your Docker images, ensuring the resilience of your infrastructure.
         </p>
         <div>
-          <Link to={ROUTES.PROFILE}>
-            <button
-              className={`bg-red-normal text-white rounded-sm w-48 h-10 text-xs hover:bg-red-light`}
-              onClick={login}>
-              START NOW
-            </button>
-          </Link>
+          <button
+            className={`bg-red-normal text-white rounded-sm w-48 h-10 text-xs hover:bg-red-light`}
+            onClick={login}>
+            START NOW
+          </button>
         </div>
       </div>
       <div className="flex flex-col mt-8 text-2xl">

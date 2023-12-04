@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { useRouteError } from 'react-router-dom';
 import { ERROR, ROUTES } from '../miscellanous/Constants';
+import { useKeycloak } from '@react-keycloak/web';
 
 const FIELDS = {
   404: {
@@ -10,11 +11,11 @@ const FIELDS = {
     paragraph: 'Sorry, we couldn’t find the page you’re looking for.'
   },
   401: {
-    header: 'You are not authenticated',
+    header: 'You are not authorized',
     paragraph: 'Sorry, but you need to log in first.'
   },
   403: {
-    header: 'You are not authorized',
+    header: 'Request forbidden',
     paragraph: 'This resource is not meant for your eyes.'
   },
   500: {
@@ -38,10 +39,10 @@ export default function ErrorPage({ notFound = false }) {
     switch (error.status) {
       case ERROR.NOT_FOUND:
         return getPage(ERROR.NOT_FOUND, FIELDS[ERROR.NOT_FOUND]);
-      case ERROR.UNAUTHENTICATED:
-        return getPage(ERROR.UNAUTHENTICATED, FIELDS[ERROR.UNAUTHENTICATED]);
       case ERROR.UNAUTHORIZED:
         return getPage(ERROR.UNAUTHORIZED, FIELDS[ERROR.UNAUTHORIZED]);
+      case ERROR.FORBIDDEN:
+        return getPage(ERROR.FORBIDDEN, FIELDS[ERROR.FORBIDDEN]);
       case ERROR.INTERNAL_SERVER_ERROR:
         return getPage(ERROR.INTERNAL_SERVER_ERROR, FIELDS[ERROR.INTERNAL_SERVER_ERROR]);
       default:
@@ -52,6 +53,7 @@ export default function ErrorPage({ notFound = false }) {
 
 function getPage(status = null, fields) {
   const navigate = useNavigate();
+  const { keycloak } = useKeycloak();
 
   return (
     <div className="grid min-h-full place-items-center px-6 py-24 sm:py-32 lg:px-8">
@@ -70,10 +72,13 @@ function getPage(status = null, fields) {
           <button
             className="rounded-md bg-red-normal px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-light"
             onClick={() => {
-              // TODO: WHEN USER IS LOGGED HE SHOULD BE ABLE TO RETURN TO SCANNER VIEW, NOT WELCOME VIEW
-              navigate(ROUTES.WELCOME);
+              if (keycloak.authenticated) {
+                navigate(ROUTES.SCANNER);
+              } else {
+                navigate(ROUTES.WELCOME);
+              }
             }}>
-            Go to home page
+            {keycloak.authenticated ? 'Go to main page' : 'Go to home page'}
           </button>
         </div>
       </div>

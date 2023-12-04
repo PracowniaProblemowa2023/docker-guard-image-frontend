@@ -38,8 +38,10 @@ export default function App() {
   const { initialized } = useKeycloak();
 
   if (!initialized) {
+    console.log('Initializing Keycloak...');
     return <Spinner />;
   }
+  console.log('Keycloak initialized!');
 
   return <RouterProvider router={router} />;
 }

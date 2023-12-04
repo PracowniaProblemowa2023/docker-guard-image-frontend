@@ -1,15 +1,17 @@
 import { json } from 'react-router-dom';
 import { ERROR } from '../miscellanous/Constants';
 
-export function ThrowError(type = ERROR.INTERNAL_SERVER_ERROR) {
+export function ThrowError(type) {
   switch (type) {
     case ERROR.NOT_FOUND:
-      throw json({}, ERROR.NOT_FOUND);
-    case ERROR.UNAUTHENTICATED:
-      throw json({}, ERROR.UNAUTHENTICATED);
+      throw new json({}, ERROR.NOT_FOUND);
     case ERROR.UNAUTHORIZED:
-      throw json({}, ERROR.UNAUTHORIZED);
+      throw new json({}, ERROR.UNAUTHORIZED);
+    case ERROR.FORBIDDEN:
+      throw new json({}, ERROR.FORBIDDEN);
     case ERROR.INTERNAL_SERVER_ERROR:
-      throw json({}, ERROR.INTERNAL_SERVER_ERROR);
+      throw new json({}, ERROR.INTERNAL_SERVER_ERROR);
+    default:
+      throw new json({}, ERROR.UNKNOWN);
   }
 }
