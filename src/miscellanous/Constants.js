@@ -1,4 +1,4 @@
-const URL = 'http://localhost:8443';
+const URL = process.env.REACT_APP_BACKEND_URL;
 
 export const ENDPOINTS = {
   PROFILE: URL + '/profile'
