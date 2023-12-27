@@ -1,14 +1,14 @@
-const URL = 'http://localhost:8443';
+const URL = 'http://localhost:8443/api/v1';
 
 export const ENDPOINTS = {
   PROFILE: URL + '/profile',
-  SCAN_RESULT: URL + '/result'
+  SCAN_RESULT: URL + '/imagescan/result'
 };
 
 export const ROUTES = {
   WELCOME: '/',
   SCANNER: '/scanner',
-  RESULTS: '/results',
+  RESULTS: '/results/:id',
   HISTORY: '/history',
   PROFILE: '/profile',
   NOT_FOUND: '*'
