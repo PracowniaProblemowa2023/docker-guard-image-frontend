@@ -1,8 +1,42 @@
-import React from 'react';
+import { useKeycloak } from '@react-keycloak/web';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import arrow from '../../assets/svg/arrow-right.svg';
+import { ENDPOINTS } from '../../miscellanous/Constants';
+import Spinner from '../../miscellanous/Components';
+import { ThrowError } from '../../errors/ErrorThrower';
 
 export default function ResultsView() {
-  return (
+  const { keycloak } = useKeycloak();
+  const [scanResult, setScanResult] = useState(null);
+  const [errorCode, setErrorCode] = useState(null);
+
+  async function getScanResult() {
+    await axios({
+      method: 'get',
+      url: ENDPOINTS.PROFILE + "sss", //TODO: Do zmiany
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${keycloak.token}`
+      }
+    })
+      .then(({ data }) => {
+        setScanResult(data);
+      })
+      .catch((error) => {
+        setErrorCode(error.response.status);
+      });
+  }
+
+  useEffect(() => {
+    getScanResult();
+  }, []);
+
+  if (errorCode) {
+    ThrowError(errorCode);
+  }
+
+  return scanResult !== null ? (
     <div className="w-full h-full flex flex-col">
       <div className="flex h-full flex-col gap-4">
         <h1 className="text-4xl">
@@ -74,5 +108,7 @@ export default function ResultsView() {
         </div>
       </div>
     </div>
+  ) : (
+    <Spinner />
   );
 }

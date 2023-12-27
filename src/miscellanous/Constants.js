@@ -1,7 +1,8 @@
 const URL = 'http://localhost:8443';
 
 export const ENDPOINTS = {
-  PROFILE: URL + '/profile'
+  PROFILE: URL + '/profile',
+  SCAN_RESULT: URL + '/result'
 };
 
 export const ROUTES = {
