@@ -8,7 +8,7 @@ export const ENDPOINTS = {
 export const ROUTES = {
   WELCOME: '/',
   SCANNER: '/scanner',
-  RESULTS: '/results/:id',
+  RESULTS: '/results',
   HISTORY: '/history',
   PROFILE: '/profile',
   NOT_FOUND: '*'
