@@ -1,7 +1,12 @@
 import React from 'react';
+import { useParams } from 'react-router';
 import arrow from '../../assets/svg/arrow-right.svg';
 
 export default function ResultsView() {
+  const { id } = useParams();
+
+  console.log('Image id: ' + id);
+
   return (
     <div className="w-full h-full flex flex-col">
       <div className="flex h-full flex-col gap-4">

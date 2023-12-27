@@ -1,12 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useKeycloak } from '@react-keycloak/web';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '../../miscellanous/Constants';
+import { ENDPOINTS, ROUTES } from '../../miscellanous/Constants';
 
 export default function ScannerView() {
   const navigate = useNavigate();
+  const { keycloak } = useKeycloak();
+  const [imageInputValue, setImageInputValue] = useState('');
 
-  function navigateToResults() {
-    return navigate(ROUTES.RESULTS);
+  function handleImageInputChange(e) {
+    const { value } = e.target;
+    setImageInputValue(value);
+  }
+
+  function scanImage() {
+    axios({
+      method: 'post',
+      url: ENDPOINTS.SCAN,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${keycloak.token}`
+      },
+      data: {
+        image: imageInputValue
+      }
+    })
+      .then(({ data }) => {
+        navigateToResults(data.id);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  function navigateToResults(imageId) {
+    return navigate(ROUTES.RESULTS + '/' + imageId);
   }
 
   return (
@@ -30,13 +59,11 @@ export default function ScannerView() {
             id="imageWithTag"
             type="text"
             placeholder="image_name:tag"
+            onChange={handleImageInputChange}
           />
-          <button className="bg-red-normal text-white rounded-sm w-44 h-12 hover:bg-red-light">
-            Upload
-          </button>
           <button
             className="bg-red-normal text-white rounded-sm w-44 h-12 hover:bg-red-light"
-            onClick={navigateToResults}>
+            onClick={scanImage}>
             Scan
           </button>
         </div>
