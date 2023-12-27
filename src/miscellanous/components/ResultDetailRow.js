@@ -8,7 +8,7 @@ export default function ResultDetailRow({ element }) {
   };
   return element !== null ? (
     <div className="mt-1 h-1/9 grid grid-cols-12 gap-4">
-      <div className="col-span-7 flex items-center justify-center bg-white rounded-sm">
+      <div className="col-span-8 flex items-center justify-center bg-white rounded-sm px-1 py-1">
         {element.summary}
       </div>
       <div className="col-span-2 flex items-center justify-center bg-white rounded-sm">
@@ -17,13 +17,17 @@ export default function ResultDetailRow({ element }) {
       <div
         className={
           element.severity === 'SEVERE'
-            ? 'col-span-3 flex items-center justify-center font-bold rounded-sm bg-red-600'
+            ? 'col-span-2 flex items-center justify-center font-bold rounded-sm bg-red-500'
+            : '' + element.severity === 'CRITICAL'
+            ? 'col-span-2 flex items-center justify-center font-bold rounded-sm bg-red-500'
             : '' + element.severity === 'HIGH'
-            ? 'col-span-3 flex items-center justify-center font-bold rounded-sm bg-red-400'
+            ? 'col-span-2 flex items-center justify-center font-bold rounded-sm bg-red-400'
             : '' + element.severity === 'MEDIUM'
-            ? 'col-span-3 flex items-center justify-center font-bold rounded-sm bg-orange-300'
+            ? 'col-span-2 flex items-center justify-center font-bold rounded-sm bg-orange-300'
+            : '' + element.severity === 'MODERATE'
+            ? 'col-span-2 flex items-center justify-center font-bold rounded-sm bg-orange-300'
             : '' + element.severity === 'LOW'
-            ? 'col-span-3 flex items-center justify-center font-bold rounded-sm bg-green-300'
+            ? 'col-span-2 flex items-center justify-center font-bold rounded-sm bg-green-300'
             : ''
         }>
         {element.severity}
