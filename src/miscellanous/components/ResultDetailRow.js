@@ -14,7 +14,18 @@ export default function ResultDetailRow({ element }) {
       <div className="col-span-2 flex items-center justify-center bg-white rounded-sm">
         {element.osvId}
       </div>
-      <div className="col-span-3 flex items-center justify-center font-bold bg-red-400 rounded-sm">
+      <div
+        className={
+          element.severity === 'SEVERE'
+            ? 'col-span-3 flex items-center justify-center font-bold rounded-sm bg-red-600'
+            : '' + element.severity === 'HIGH'
+            ? 'col-span-3 flex items-center justify-center font-bold rounded-sm bg-red-400'
+            : '' + element.severity === 'MEDIUM'
+            ? 'col-span-3 flex items-center justify-center font-bold rounded-sm bg-orange-300'
+            : '' + element.severity === 'LOW'
+            ? 'col-span-3 flex items-center justify-center font-bold rounded-sm bg-green-300'
+            : ''
+        }>
         {element.severity}
       </div>
     </div>
