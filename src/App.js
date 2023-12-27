@@ -24,7 +24,7 @@ const router = createBrowserRouter(
         <Route path={ROUTES.WELCOME} element={<WelcomeView />} />
         <Route element={<ProtectedRoute />}>
           <Route path={ROUTES.SCANNER} element={<ScannerView />} />
-          <Route path={ROUTES.RESULTS} element={<ResultsView />} />
+          <Route path={ROUTES.RESULTS + '/:id'} element={<ResultsView />} />
           <Route path={ROUTES.HISTORY} element={<HistoryView />} />
           <Route path={ROUTES.PROFILE} element={<ProfileView />} />
         </Route>
