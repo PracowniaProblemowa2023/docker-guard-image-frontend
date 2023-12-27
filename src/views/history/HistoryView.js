@@ -1,15 +1,43 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '../../miscellanous/Constants';
+import { useKeycloak } from '@react-keycloak/web';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { ENDPOINTS } from '../../miscellanous/Constants';
+import HistoryRow from '../../miscellanous/components/HistoryRow';
+import { ThrowError } from '../../errors/ErrorThrower';
+import Spinner from '../../miscellanous/Components';
 
 export default function HistoryViews() {
-  const navigate = useNavigate();
+  const { keycloak } = useKeycloak();
+  const [history, setHistory] = useState(null);
+  const [errorCode, setErrorCode] = useState(null);
 
-  function navigateToResults() {
-    return navigate(ROUTES.RESULTS);
+  async function getHistory() {
+    await axios({
+      method: 'get',
+      url: ENDPOINTS.HISTORY,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${keycloak.token}`
+      }
+    })
+      .then(({ data }) => {
+        console.log(data);
+        setHistory(data);
+      })
+      .catch((error) => {
+        setErrorCode(error.response.status);
+      });
   }
 
-  return (
+  useEffect(() => {
+    getHistory();
+  }, []);
+
+  if (errorCode) {
+    ThrowError(errorCode);
+  }
+
+  return history !== null ? (
     <div className="w-full flex flex-col">
       <div className="flex flex-col gap-4">
         <h1 className="text-4xl">
@@ -21,40 +49,28 @@ export default function HistoryViews() {
           You can find your previous scans here. After clicking on the link, you can view the
           details of a given scan.
         </p>
-        <div className="h-48 mt-11 grid grid-cols-12 grid-rows-3 gap-4">
+        {/* Header */}
+        <div className="h-11 mt-11 grid grid-cols-12 gap-4">
           <div className="col-span-2 flex items-center justify-center font-bold text-xl bg-black text-white rounded-sm">
             DATE
           </div>
-          <div className="col-span-8 flex items-center justify-center font-bold text-xl bg-black text-white rounded-sm">
+          <div className="col-span-6 flex items-center justify-center font-bold text-xl bg-black text-white rounded-sm">
             IMAGE
+          </div>
+          <div className="col-span-2 flex items-center justify-center font-bold text-xl bg-black text-white rounded-sm">
+            STATUS
           </div>
           <div className="col-span-2 flex items-center justify-center font-bold text-xl bg-black text-white rounded-sm">
             RESULT
           </div>
-          <div className="col-span-2 flex items-center justify-center bg-white rounded-sm">
-            10.11.2023 16:17
-          </div>
-          <div className="col-span-8 flex items-center justify-center bg-white rounded-sm">
-            Ubuntu 21.20
-          </div>
-          <button
-            className="col-span-2 bg-red-normal text-white rounded-sm hover:bg-red-light"
-            onClick={navigateToResults}>
-            View
-          </button>
-          <div className="col-span-2 flex items-center justify-center bg-white rounded-sm">
-            11.09.2023 20:09
-          </div>
-          <div className="col-span-8 flex items-center justify-center bg-white rounded-sm">
-            Ubuntu 23.10
-          </div>
-          <button
-            className="col-span-2 bg-red-normal text-white rounded-sm hover:bg-red-light"
-            onClick={navigateToResults}>
-            View
-          </button>
         </div>
+        {/* Zawartość */}
+        {history.map((element) => (
+          <HistoryRow element={element} key={element.id} />
+        ))}
       </div>
     </div>
+  ) : (
+    <Spinner />
   );
 }
