@@ -27,7 +27,7 @@ export default function ResultsView() {
         let tmpPayloads = [];
         data.payloads.forEach((element) => {
           // if (element.packageThreatsOsv.length !== 0 || element.packageThreatsCve.length !== 0) {
-          if (element.packageThreatsOsv.length !== 0) {
+          if (element.packageThreatsCve.length !== 0) {
             tmpPayloads.push(element);
           }
         });
