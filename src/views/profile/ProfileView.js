@@ -46,7 +46,7 @@ export default function ProfileView() {
             <p className="mt-1">Email:</p>
           </div>
           <div className="flex flex-col">
-            <p className="mt-1">{profile.firstname + ' ' + profile.lastname}</p>
+            <p className="mt-1">{profile.name + ' ' + profile.lastname}</p>
             <p className="mt-1">{profile.email}</p>
           </div>
           <br></br>

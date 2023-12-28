@@ -5,9 +5,9 @@ const DEBUG = 0;
 // Setup Keycloak instance as needed
 // Pass initialization options as required or leave blank to load from 'keycloak.json'
 export const keycloak = new Keycloak({
-  url: 'http://localhost:8080',
-  realm: 'realm2',
-  clientId: 'test_client'
+  url: process.env.REACT_APP_KEYCLOAK_URL,
+  realm: process.env.REACT_APP_KEYCLOAK_REALM,
+  clientId: process.env.REACT_APP_KEYCLOAK_CLIENTID
 });
 
 export const eventLogger = (event, error) => {
