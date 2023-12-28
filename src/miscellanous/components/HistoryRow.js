@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../miscellanous/Constants';
-// import Spinner from '../Components';
 
 export default function HistoryRow({ element }) {
   const navigate = useNavigate();

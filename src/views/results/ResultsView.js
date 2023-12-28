@@ -26,13 +26,12 @@ export default function ResultsView() {
       .then(({ data }) => {
         let tmpPayloads = [];
         data.payloads.forEach((element) => {
-          if (element.packageThreatsOsv.length !== 0 || element.packageThreatsCve.length !== 0) {
-            // if (element.packageThreatsCve.length !== 0) {
+          // if (element.packageThreatsOsv.length !== 0 || element.packageThreatsCve.length !== 0) {
+          if (element.packageThreatsCve.length !== 0) {
             tmpPayloads.push(element);
           }
         });
         data.payloads = tmpPayloads;
-        console.log(data); //TODO: do usunięcia
         setScanResult(data);
         setPackages(data.payloads);
       })
@@ -58,6 +57,7 @@ export default function ResultsView() {
           image
         </h1>
         <p>List of found vulnerabilities with their security scores</p>
+        <h2 className={packages.length === 0 ? 'text-xl' : 'hidden'}>No vulnerabilities found</h2>
         {packages.map((element) => (
           <ResultRow element={element} key={element.version} />
         ))}
