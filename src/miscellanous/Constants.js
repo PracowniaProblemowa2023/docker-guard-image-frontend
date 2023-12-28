@@ -3,6 +3,7 @@ const URL = 'http://localhost:8443/api/v1';
 export const ENDPOINTS = {
   PROFILE: URL + '/profile',
   HISTORY: URL + '/imagescan',
+  SCAN_STATE: URL + '/imagescan/state',
   SCAN_RESULT: URL + '/imagescan/result',
   SHARE_SCAN_RESULT: URL + '/fileaccess',
   COMMENT: URL + '/comment'

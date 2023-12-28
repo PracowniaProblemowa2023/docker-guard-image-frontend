@@ -11,12 +11,30 @@ import { ThrowError } from '../../errors/ErrorThrower';
 export default function ResultsView() {
   const params = useParams();
   const { keycloak } = useKeycloak();
+  const [scanState, setScanState] = useState(null);
   const [scanResult, setScanResult] = useState(null);
   const [packages, setPackages] = useState(null);
   const [comments, setComments] = useState(null);
   const [shareInputValue, setShareInputValue] = useState('');
   const [commentInputValue, setCommentInputValue] = useState('');
   const [errorCode, setErrorCode] = useState(null);
+
+  async function getScanState() {
+    await axios({
+      method: 'get',
+      url: ENDPOINTS.SCAN_STATE + '?id=' + params.id,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${keycloak.token}`
+      }
+    })
+      .then(({ data }) => {
+        setScanState(data);
+      })
+      .catch((error) => {
+        setErrorCode(error.response.status);
+      });
+  }
 
   async function getScanResult() {
     await axios({
@@ -119,6 +137,7 @@ export default function ResultsView() {
   }
 
   useEffect(() => {
+    getScanState();
     getScanResult();
     getComments();
   }, []);
@@ -150,10 +169,21 @@ export default function ResultsView() {
             Share
           </button>
         </div>
-        <h2 className={packages.length === 0 ? 'text-xl' : 'hidden'}>No vulnerabilities found</h2>
-        {packages.map((element) => (
-          <ResultRow element={element} key={element.version} />
-        ))}
+        <h2
+          className={
+            scanState.state === 'FINISHED' && packages.length === 0 ? 'text-xl' : 'hidden'
+          }>
+          No vulnerabilities found
+        </h2>
+        <h2
+          className={
+            scanState.state === 'PROGRESS' || scanState.state === 'STARTED' ? 'text-xl' : 'hidden'
+          }>
+          Scanning in progress, try again later.
+        </h2>
+        {scanState.state !== 'PROGRESS' && scanState.state !== 'STARTED'
+          ? packages.map((element) => <ResultRow element={element} key={element.version} />)
+          : ''}
         <p className="mt-5 text-xl">Comments</p>
         <div className="grid grid-cols-12 gap-4">
           <input
