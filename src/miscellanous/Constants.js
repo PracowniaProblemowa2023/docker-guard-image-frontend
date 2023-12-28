@@ -4,7 +4,8 @@ export const ENDPOINTS = {
   PROFILE: URL + '/profile',
   HISTORY: URL + '/imagescan',
   SCAN_RESULT: URL + '/imagescan/result',
-  SHARE_SCAN_RESULT: URL + '/fileaccess'
+  SHARE_SCAN_RESULT: URL + '/fileaccess',
+  COMMENT: URL + '/comment'
 };
 
 export const ROUTES = {

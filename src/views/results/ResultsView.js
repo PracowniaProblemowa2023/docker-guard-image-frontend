@@ -5,6 +5,7 @@ import { useParams } from 'react-router';
 import { ENDPOINTS } from '../../miscellanous/Constants';
 import Spinner from '../../miscellanous/Components';
 import ResultRow from '../../miscellanous/components/ResultRow';
+import Comment from '../../miscellanous/components/Comment';
 import { ThrowError } from '../../errors/ErrorThrower';
 
 export default function ResultsView() {
@@ -12,7 +13,9 @@ export default function ResultsView() {
   const { keycloak } = useKeycloak();
   const [scanResult, setScanResult] = useState(null);
   const [packages, setPackages] = useState(null);
+  const [comments, setComments] = useState(null);
   const [shareInputValue, setShareInputValue] = useState('');
+  const [commentInputValue, setCommentInputValue] = useState('');
   const [errorCode, setErrorCode] = useState(null);
 
   async function getScanResult() {
@@ -41,33 +44,83 @@ export default function ResultsView() {
       });
   }
 
-  function handleShareInputChange(e) {
-    const { value } = e.target;
-    setShareInputValue(value);
-  }
-
-  function shareScanResult() {
-    axios({
-      method: 'post',
-      url: ENDPOINTS.SHARE_SCAN_RESULT,
+  async function getComments() {
+    await axios({
+      method: 'get',
+      url: ENDPOINTS.COMMENT + '/' + params.id,
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${keycloak.token}`
-      },
-      data: {
-        userId: shareInputValue,
-        permission: 'READ',
-        imageScanId: scanResult.id
       }
     })
-      .then(() => {})
+      .then(({ data }) => {
+        setComments(data);
+      })
       .catch((error) => {
         setErrorCode(error.response.status);
       });
   }
 
+  function handleShareInputChange(e) {
+    const { value } = e.target;
+    setShareInputValue(value);
+  }
+
+  function handleCommentInputChange(e) {
+    const { value } = e.target;
+    setCommentInputValue(value);
+  }
+
+  function shareScanResult() {
+    if (shareInputValue !== '') {
+      axios({
+        method: 'post',
+        url: ENDPOINTS.SHARE_SCAN_RESULT,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${keycloak.token}`
+        },
+        data: {
+          userId: shareInputValue,
+          permission: 'READ',
+          imageScanId: scanResult.id
+        }
+      })
+        .then(() => {})
+        .catch((error) => {
+          setErrorCode(error.response.status);
+        });
+    }
+  }
+
+  function commentScanResult() {
+    if (commentInputValue !== '') {
+      console.log(commentInputValue);
+      // window.location.reload(false);
+      axios({
+        method: 'post',
+        url: ENDPOINTS.COMMENT,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${keycloak.token}`
+        },
+        data: {
+          imageScanId: scanResult.id,
+          text: commentInputValue
+        }
+      })
+        .then(() => {
+          window.location.reload(false);
+        })
+        .catch((error) => {
+          setErrorCode(error.response.status);
+        });
+    }
+  }
+
   useEffect(() => {
     getScanResult();
+    getComments();
   }, []);
 
   if (errorCode) {
@@ -101,6 +154,25 @@ export default function ResultsView() {
         {packages.map((element) => (
           <ResultRow element={element} key={element.version} />
         ))}
+        <p className="mt-5 text-xl">Comments</p>
+        <div className="grid grid-cols-12 gap-4">
+          <input
+            className="col-span-10 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="imageWithTag"
+            type="text"
+            placeholder="Add comment"
+            onChange={handleCommentInputChange}
+          />
+          <button
+            className="col-span-2 w-full bg-red-normal text-white rounded-sm h-12 hover:bg-red-light"
+            onClick={commentScanResult}>
+            Add
+          </button>
+        </div>
+        {comments.map((element) => (
+          <Comment element={element} key={element.id} />
+        ))}
+        <div className="w-full mb-10 invisible">s</div>
       </div>
     </div>
   ) : (
