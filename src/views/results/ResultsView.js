@@ -12,6 +12,7 @@ export default function ResultsView() {
   const { keycloak } = useKeycloak();
   const [scanResult, setScanResult] = useState(null);
   const [packages, setPackages] = useState(null);
+  const [shareInputValue, setShareInputValue] = useState('');
   const [errorCode, setErrorCode] = useState(null);
 
   async function getScanResult() {
@@ -40,6 +41,31 @@ export default function ResultsView() {
       });
   }
 
+  function handleShareInputChange(e) {
+    const { value } = e.target;
+    setShareInputValue(value);
+  }
+
+  function shareScanResult() {
+    axios({
+      method: 'post',
+      url: ENDPOINTS.SHARE_SCAN_RESULT,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${keycloak.token}`
+      },
+      data: {
+        userId: shareInputValue,
+        permission: 'READ',
+        imageScanId: scanResult.id
+      }
+    })
+      .then(() => {})
+      .catch((error) => {
+        setErrorCode(error.response.status);
+      });
+  }
+
   useEffect(() => {
     getScanResult();
   }, []);
@@ -56,7 +82,21 @@ export default function ResultsView() {
           <span className="text-red-normal">{' ' + scanResult.imageName + ' '}</span>
           image
         </h1>
-        <p>List of found vulnerabilities with their security scores</p>
+        <div className="grid grid-cols-12 gap-4">
+          <p className="col-span-8">List of found vulnerabilities with their security scores</p>
+          <input
+            className="col-span-2 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="imageWithTag"
+            type="text"
+            placeholder="Name or email"
+            onChange={handleShareInputChange}
+          />
+          <button
+            className="col-span-2 w-full bg-red-normal text-white rounded-sm h-12 hover:bg-red-light"
+            onClick={shareScanResult}>
+            Share
+          </button>
+        </div>
         <h2 className={packages.length === 0 ? 'text-xl' : 'hidden'}>No vulnerabilities found</h2>
         {packages.map((element) => (
           <ResultRow element={element} key={element.version} />
