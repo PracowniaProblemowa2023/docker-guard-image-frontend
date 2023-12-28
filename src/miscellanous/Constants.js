@@ -2,7 +2,9 @@ const URL = process.env.REACT_APP_BACKEND_URL;
 
 export const ENDPOINTS = {
   PROFILE: URL + '/profile',
-  SCAN: URL + '/imagescan'
+  SCAN: URL + '/imagescan',
+  HISTORY: URL + '/imagescan',
+  SCAN_RESULT: URL + '/imagescan/result'
 };
 
 export const ROUTES = {
