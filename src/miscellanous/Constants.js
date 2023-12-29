@@ -7,7 +7,9 @@ export const ENDPOINTS = {
   SCAN_STATE: URL + '/imagescan/state',
   SCAN_RESULT: URL + '/imagescan/result',
   SHARE_SCAN_RESULT: URL + '/fileaccess',
-  COMMENT: URL + '/comment'
+  ADD_ACCESS: URL + '/fileaccess',
+  COMMENT: URL + '/comment',
+  USERS: URL + '/users'
 };
 
 export const ROUTES = {
