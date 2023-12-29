@@ -14,10 +14,13 @@ export default function ResultsView() {
   const { keycloak } = useKeycloak();
   const [scanState, setScanState] = useState(null);
   const [scanResult, setScanResult] = useState(null);
-  const [packages, setPackages] = useState(null);
   const [share, setShare] = useState(false);
+  const [packagesWithVulnerabilities, setPackagesWithVulnerabilities] = useState(null);
+  const [packagesWithoutVulnerabilities, setPackagesWithoutVulnerabilities] = useState(null);
   const [errorCode, setErrorCode] = useState(null);
   const [writeAccess, setWriteAccess] = useState(false);
+
+  let index = 0;
 
   async function getScanState() {
     await axios({
@@ -47,16 +50,19 @@ export default function ResultsView() {
     })
       .then(({ data }) => {
         setWriteAccess(data.permission === 'WRITE');
-        let tmpPayloads = [];
+        let withVulerabilities = [];
+        let withoutVulerabilities = [];
         data.payloads.forEach((element) => {
           // if (element.packageThreatsOsv.length !== 0 || element.packageThreatsCve.length !== 0) {
           if (element.packageThreatsCve.length !== 0) {
-            tmpPayloads.push(element);
+            withVulerabilities.push(element);
+          } else {
+            withoutVulerabilities.push(element);
           }
         });
-        data.payloads = tmpPayloads;
         setScanResult(data);
-        setPackages(data.payloads);
+        setPackagesWithVulnerabilities(withVulerabilities);
+        setPackagesWithoutVulnerabilities(withoutVulerabilities);
       })
       .catch((error) => {
         setErrorCode(error.response.status);
@@ -67,6 +73,16 @@ export default function ResultsView() {
     getScanState();
     getScanResult();
   }, []);
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const closeDropdown = () => {
+    setIsOpen(false);
+  };
 
   if (errorCode) {
     ThrowError(errorCode);
@@ -93,7 +109,9 @@ export default function ResultsView() {
         </div>
         <h2
           className={
-            scanState.state === 'FINISHED' && packages.length === 0 ? 'text-xl' : 'hidden'
+            scanState.state === 'FINISHED' && packagesWithVulnerabilities.length === 0
+              ? 'text-xl'
+              : 'hidden'
           }>
           No vulnerabilities found
         </h2>
@@ -104,8 +122,31 @@ export default function ResultsView() {
           Scanning in progress, try again later.
         </h2>
         {scanState.state !== 'PROGRESS' && scanState.state !== 'STARTED'
-          ? packages.map((element) => <ResultRow element={element} key={element.version} />)
+          ? packagesWithVulnerabilities.map((element) => (
+              <ResultRow element={element} isWithVulnerabilities={true} key={element.version} />
+            ))
           : ''}
+        <div className="grid grid-cols-12 gap-4">
+          <button
+            className="col-span-2 w-full bg-red-normal text-white rounded-sm h-12 hover:bg-red-light"
+            onClick={toggleDropdown}>
+            Show all depencences
+          </button>
+        </div>
+        {isOpen && (
+          <div onClick={closeDropdown}>
+            {scanState.state !== 'PROGRESS' && scanState.state !== 'STARTED'
+              ? packagesWithoutVulnerabilities.map((element) => (
+                  <ResultRow
+                    element={element}
+                    isWithVulnerabilities={false}
+                    key={element.version}
+                    index={index++}
+                  />
+                ))
+              : ''}
+          </div>
+        )}
         <ResultsComment scanResultId={params.id}></ResultsComment>
         <div className="w-full mb-10 invisible"></div>
       </div>
