@@ -3,12 +3,14 @@ import ResultDetailRow from './ResultDetailRow';
 import PropTypes from 'prop-types';
 import Spinner from '../Components';
 
-export default function ResultRow({ element }) {
+export default function ResultRow({ element, isWithVulnerabilities, index }) {
   // const [vulnerabilitiesOsv, setVulnerabilitiesOsv] = useState(null);
   const [vulnerabilitiesCve, setVulnerabilitiesCve] = useState(null);
 
   ResultRow.propTypes = {
-    element: PropTypes.object.isRequired
+    element: PropTypes.object.isRequired,
+    isWithVulnerabilities: PropTypes.object.isRequired,
+    index: PropTypes.object.isOptional
   };
 
   async function getVulnerabilities() {
@@ -23,7 +25,10 @@ export default function ResultRow({ element }) {
   // return vulnerabilitiesOsv !== null && vulnerabilitiesCve !== null ? (
   return vulnerabilitiesCve !== null ? (
     <div>
-      <div className="mt-2 h-1/9 grid grid-cols-12 gap-4">
+      <div
+        className={
+          isWithVulnerabilities || index === 0 ? 'mt-2 h-1/9 grid grid-cols-12 gap-4' : 'hidden'
+        }>
         <div className="col-span-8 flex items-center justify-center font-bold text-l bg-black text-white rounded-sm">
           Package Name
         </div>
@@ -34,7 +39,12 @@ export default function ResultRow({ element }) {
           Ecosystem
         </div>
       </div>
-      <div className="mt-1 h-1/9 grid grid-cols-12 gap-4">
+      <div
+        className={
+          isWithVulnerabilities || index === 0
+            ? 'mt-1 h-1/9 grid grid-cols-12 gap-4'
+            : 'mt-1 h-1/9 grid grid-cols-12 gap-4'
+        }>
         <div className="col-span-8 flex items-center justify-center bg-white rounded-sm">
           {element.name}
         </div>
@@ -45,7 +55,7 @@ export default function ResultRow({ element }) {
           {element.type}
         </div>
       </div>
-      <div className="mt-1 h-1/9 grid grid-cols-12 gap-4">
+      <div className={isWithVulnerabilities ? 'mt-1 h-1/9 grid grid-cols-12 gap-4' : 'hidden'}>
         {/* Podatnosci header */}
         <div className="col-span-8 flex items-center justify-center font-bold text-l bg-gray-500 text-white rounded-sm">
           Summary
