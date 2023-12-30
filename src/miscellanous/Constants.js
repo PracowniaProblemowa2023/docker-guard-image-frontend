@@ -9,7 +9,8 @@ export const ENDPOINTS = {
   SHARE_SCAN_RESULT: URL + '/fileaccess',
   ADD_ACCESS: URL + '/fileaccess',
   COMMENT: URL + '/comment',
-  USERS: URL + '/users'
+  USERS: URL + '/users',
+  NOTIFICATIONS: URL + '/notification'
 };
 
 export const ROUTES = {
