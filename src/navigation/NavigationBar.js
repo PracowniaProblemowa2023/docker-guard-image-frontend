@@ -119,7 +119,7 @@ export default function NavigationBar() {
                   LOGOUT
                 </button>
                 <img
-                  className="w-10 h-10"
+                  className="w-10 h-10 cursor-pointer"
                   src={newNotifications.length > 0 ? notificationBadged : notification}
                   onClick={() => setShowNotifications(!showNotifications)}></img>
                 <Link to={ROUTES.PROFILE}>

@@ -23,6 +23,11 @@ export default function NotificationList({
     groupNotifications(allNotifications);
   }
 
+  function updateNotificationsLastViewTimeAndNavigate(elementId) {
+    updateNotificationsLastViewTime();
+    navigateToResults(elementId);
+  }
+
   return (
     <div className="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
       <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
@@ -73,7 +78,7 @@ export default function NotificationList({
                       message={notification.message}
                       bg={'bg-white'}
                       elementId={notification.elementId}
-                      goToElement={navigateToResults}
+                      goToElement={updateNotificationsLastViewTimeAndNavigate}
                     />
                   ))}
                 </div>
@@ -92,7 +97,7 @@ export default function NotificationList({
                       message={notification.message}
                       bg={'bg-gray-300'}
                       elementId={notification.elementId}
-                      goToElement={navigateToResults}
+                      goToElement={updateNotificationsLastViewTimeAndNavigate}
                     />
                   ))}
                 </div>
