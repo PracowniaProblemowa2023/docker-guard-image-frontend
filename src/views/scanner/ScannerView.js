@@ -3,11 +3,13 @@ import { useKeycloak } from '@react-keycloak/web';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { ENDPOINTS, ROUTES } from '../../miscellanous/Constants';
+import { ThrowError } from '../../errors/ErrorThrower';
 
 export default function ScannerView() {
   const navigate = useNavigate();
   const { keycloak } = useKeycloak();
   const [imageInputValue, setImageInputValue] = useState('');
+  const [errorCode, setErrorCode] = useState(null);
 
   function handleImageInputChange(e) {
     const { value } = e.target;
@@ -30,8 +32,12 @@ export default function ScannerView() {
         navigateToResults(data.id);
       })
       .catch((error) => {
-        console.log(error);
+        setErrorCode(error.response.status);
       });
+  }
+
+  if (errorCode) {
+    ThrowError(errorCode);
   }
 
   function navigateToResults(imageId) {
