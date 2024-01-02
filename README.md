@@ -1,20 +1,21 @@
 # docker-guard-image-frontend
 
-TODO: Add description
+Frontend of Docker Image Guard app.
 
-## Libraries/frameworks
+# Developer guide
+### Libraries/frameworks
 
 - utility CSS framework [Tailwind CSS](https://tailwindcss.com/)
 - fully-featured routing library [React Router](https://reactrouter.com/en/main)
 - http client [Axios](https://axios-http.com/)
 - [React Redux](https://react-redux.js.org/)
 
-## Tools
+### Tools
 
 - static code analysis [ESlint](https://eslint.org/)
 - code formatting [Prettier](https://prettier.io/)
 
-## Recommended VSCode extensions
+### Recommended VSCode extensions
 
 - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
 - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
