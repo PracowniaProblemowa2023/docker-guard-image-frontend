@@ -6,10 +6,6 @@ import { ROUTES } from '../../miscellanous/Constants';
 export default function HistoryRow({ element }) {
   const navigate = useNavigate();
 
-  HistoryRow.propTypes = {
-    element: PropTypes.object.isRequired
-  };
-
   function navigateToResults() {
     return navigate(ROUTES.RESULTS + '/' + element.id);
   }
@@ -33,3 +29,7 @@ export default function HistoryRow({ element }) {
     </div>
   );
 }
+
+HistoryRow.propTypes = {
+  element: PropTypes.object.isRequired
+};

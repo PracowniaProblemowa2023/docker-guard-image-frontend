@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useKeycloak } from '@react-keycloak/web';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { ENDPOINTS, ROUTES } from '../../miscellanous/Constants';
+import { ENDPOINTS, ROUTES, ERROR } from '../../miscellanous/Constants';
 import { ThrowError } from '../../errors/ErrorThrower';
 
 export default function ScannerView() {
@@ -32,7 +32,11 @@ export default function ScannerView() {
         navigateToResults(data.id);
       })
       .catch((error) => {
-        setErrorCode(error.response.status);
+        if (error.response) {
+          setErrorCode(error.response.status);
+        } else {
+          setErrorCode(ERROR.UNKNOWN);
+        }
       });
   }
 

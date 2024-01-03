@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import { ENDPOINTS } from '../../miscellanous/Constants';
+import { ENDPOINTS, ERROR } from '../../miscellanous/Constants';
 import { ThrowError } from '../../errors/ErrorThrower';
 
 export default function Share({ setShare }) {
@@ -27,7 +27,11 @@ export default function Share({ setShare }) {
         setSelected(data);
       })
       .catch((error) => {
-        setErrorCode(error.response.status);
+        if (error.response) {
+          setErrorCode(error.response.status);
+        } else {
+          setErrorCode(ERROR.UNKNOWN);
+        }
       });
   }
 
@@ -44,7 +48,11 @@ export default function Share({ setShare }) {
         setSearch(data);
       })
       .catch((error) => {
-        setErrorCode(error.response.status);
+        if (error.response) {
+          setErrorCode(error.response.status);
+        } else {
+          setErrorCode(ERROR.UNKNOWN);
+        }
       });
   }
 
@@ -69,7 +77,11 @@ export default function Share({ setShare }) {
         getSearch(searchValue);
       })
       .catch((error) => {
-        setErrorCode(error.response.status);
+        if (error.response) {
+          setErrorCode(error.response.status);
+        } else {
+          setErrorCode(ERROR.UNKNOWN);
+        }
       });
   }
 
@@ -93,7 +105,11 @@ export default function Share({ setShare }) {
         getSearch(searchValue);
       })
       .catch((error) => {
-        setErrorCode(error.response.status);
+        if (error.response) {
+          setErrorCode(error.response.status);
+        } else {
+          setErrorCode(ERROR.UNKNOWN);
+        }
       });
   }
 

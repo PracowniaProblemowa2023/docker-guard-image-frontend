@@ -66,11 +66,6 @@ function getPage(status = null, fields) {
         <div className="mt-10 flex items-center justify-center gap-x-6">
           <button
             className="rounded-md bg-red-normal px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-light"
-            onClick={() => navigate(-1)}>
-            Go back
-          </button>
-          <button
-            className="rounded-md bg-red-normal px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-light"
             onClick={() => {
               if (keycloak.authenticated) {
                 navigate(ROUTES.SCANNER);
@@ -78,7 +73,7 @@ function getPage(status = null, fields) {
                 navigate(ROUTES.WELCOME);
               }
             }}>
-            {keycloak.authenticated ? 'Go to main page' : 'Go to home page'}
+            {keycloak.authenticated ? 'Go to the scanner page' : 'Go to the home page'}
           </button>
         </div>
       </div>

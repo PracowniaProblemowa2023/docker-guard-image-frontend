@@ -1,7 +1,7 @@
 import { useKeycloak } from '@react-keycloak/web';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { ENDPOINTS } from '../../miscellanous/Constants';
+import { ENDPOINTS, ERROR } from '../../miscellanous/Constants';
 import HistoryRow from '../../miscellanous/components/HistoryRow';
 import { ThrowError } from '../../errors/ErrorThrower';
 import Spinner from '../../miscellanous/Components';
@@ -21,11 +21,14 @@ export default function HistoryViews() {
       }
     })
       .then(({ data }) => {
-        console.log(data);
         setHistory(data);
       })
       .catch((error) => {
-        setErrorCode(error.response.status);
+        if (error.response) {
+          setErrorCode(error.response.status);
+        } else {
+          setErrorCode(ERROR.UNKNOWN);
+        }
       });
   }
 
@@ -49,7 +52,6 @@ export default function HistoryViews() {
           You can find your previous scans here. After clicking on the link, you can view the
           details of a given scan.
         </p>
-        {/* Header */}
         <div className="h-11 mt-11 grid grid-cols-12 gap-4">
           <div className="col-span-2 flex items-center justify-center font-bold text-xl bg-black text-white rounded-sm">
             DATE
@@ -64,9 +66,8 @@ export default function HistoryViews() {
             RESULT
           </div>
         </div>
-        {/* Zawartość */}
-        {history.map((element) => (
-          <HistoryRow element={element} key={element.id} />
+        {history.map((element, index) => (
+          <HistoryRow element={element} key={index} />
         ))}
       </div>
     </div>

@@ -2,7 +2,7 @@ import { useKeycloak } from '@react-keycloak/web';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { ENDPOINTS } from '../../miscellanous/Constants';
+import { ENDPOINTS, ERROR } from '../../miscellanous/Constants';
 import Comment from '../../miscellanous/components/Comment';
 import { ThrowError } from '../../errors/ErrorThrower';
 import PropTypes from 'prop-types';
@@ -27,7 +27,11 @@ export default function ResultsComment({ scanResultId }) {
         setComments(data);
       })
       .catch((error) => {
-        setErrorCode(error.response.status);
+        if (error.response) {
+          setErrorCode(error.response.status);
+        } else {
+          setErrorCode(ERROR.UNKNOWN);
+        }
       });
   }
 

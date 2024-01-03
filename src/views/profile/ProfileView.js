@@ -1,7 +1,7 @@
 import { useKeycloak } from '@react-keycloak/web';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { ENDPOINTS } from '../../miscellanous/Constants';
+import { ENDPOINTS, ERROR } from '../../miscellanous/Constants';
 import Spinner from '../../miscellanous/Components';
 import { ThrowError } from '../../errors/ErrorThrower';
 
@@ -23,7 +23,11 @@ export default function ProfileView() {
         setProfile(data);
       })
       .catch((error) => {
-        setErrorCode(error.response.status);
+        if (error.response) {
+          setErrorCode(error.response.status);
+        } else {
+          setErrorCode(ERROR.UNKNOWN);
+        }
       });
   }
 
@@ -49,16 +53,7 @@ export default function ProfileView() {
             <p className="mt-1">{profile.name + ' ' + profile.lastname}</p>
             <p className="mt-1">{profile.email}</p>
           </div>
-          <br></br>
         </div>
-        <br></br>
-        {/* <p>
-          You can also delete your account, but remember, that all your scan history will be
-          irreversibly lost.
-        </p>
-        <button className="bg-gray-400 text-white rounded-sm w-44 h-12 hover:bg-red-light transition duration-300">
-          DELETE ACCOUNT
-        </button> */}
       </div>
     </div>
   ) : (

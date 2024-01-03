@@ -2,7 +2,7 @@ import { useKeycloak } from '@react-keycloak/web';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { ENDPOINTS } from '../../miscellanous/Constants';
+import { ENDPOINTS, ERROR } from '../../miscellanous/Constants';
 import Spinner from '../../miscellanous/Components';
 import ResultRow from '../../miscellanous/components/ResultRow';
 import { ThrowError } from '../../errors/ErrorThrower';
@@ -35,7 +35,11 @@ export default function ResultsView() {
         setScanState(data);
       })
       .catch((error) => {
-        setErrorCode(error.response.status);
+        if (error.response) {
+          setErrorCode(error.response.status);
+        } else {
+          setErrorCode(ERROR.UNKNOWN);
+        }
       });
   }
 
@@ -53,7 +57,6 @@ export default function ResultsView() {
         let withVulerabilities = [];
         let withoutVulerabilities = [];
         data.payloads.forEach((element) => {
-          // if (element.packageThreatsOsv.length !== 0 || element.packageThreatsCve.length !== 0) {
           if (element.packageThreatsCve.length !== 0) {
             withVulerabilities.push(element);
           } else {
@@ -65,7 +68,11 @@ export default function ResultsView() {
         setPackagesWithoutVulnerabilities(withoutVulerabilities);
       })
       .catch((error) => {
-        setErrorCode(error.response.status);
+        if (error.response) {
+          setErrorCode(error.response.status);
+        } else {
+          setErrorCode(ERROR.UNKNOWN);
+        }
       });
   }
 
@@ -90,65 +97,83 @@ export default function ResultsView() {
 
   return scanResult !== null ? (
     <div className="w-full h-full flex flex-col">
-      {share ? <Share setShare={setShare}></Share> : null}
+      {share ? <Share setShare={setShare} /> : null}
       <div className="flex h-full flex-col gap-4">
         <h1 className="text-4xl">
           <span className="text-red-normal">Vulnerability</span> scanning report of
           <span className="text-red-normal">{' ' + scanResult.imageName + ' '}</span>
           image
         </h1>
-        <div className="grid grid-cols-12 gap-4">
-          <p className="col-span-10">List of found vulnerabilities with their security scores</p>
-          {writeAccess && (
-            <button
-              className="col-span-2 w-full bg-red-normal text-white rounded-sm h-12 hover:bg-red-light float-right"
-              onClick={() => setShare(true)}>
-              Share
-            </button>
-          )}
-        </div>
-        <h2
-          className={
-            scanState.state === 'FINISHED' && packagesWithVulnerabilities.length === 0
-              ? 'text-xl'
-              : 'hidden'
-          }>
-          No vulnerabilities found
-        </h2>
-        <h2
-          className={
-            scanState.state === 'PROGRESS' || scanState.state === 'STARTED' ? 'text-xl' : 'hidden'
-          }>
-          Scanning in progress, try again later.
-        </h2>
-        {scanState.state !== 'PROGRESS' && scanState.state !== 'STARTED'
-          ? packagesWithVulnerabilities.map((element) => (
-              <ResultRow element={element} isWithVulnerabilities={true} key={element.version} />
-            ))
-          : ''}
-        <div className="grid grid-cols-12 gap-4">
-          <button
-            className="col-span-2 w-full bg-red-normal text-white rounded-sm h-12 hover:bg-red-light"
-            onClick={toggleDropdown}>
-            Show all depencences
-          </button>
-        </div>
-        {isOpen && (
-          <div onClick={closeDropdown}>
+        {scanState.state === 'ERROR' ? (
+          <>
+            <h1>
+              Sorry, but scan has ended with error. Currently, we can&apos;t provide the information
+              about what went wrong.
+            </h1>
+            <h1>
+              Please, check if the image name and the tag you provided are correct and try again.
+            </h1>
+          </>
+        ) : (
+          <>
+            <div className="grid grid-cols-12 gap-4">
+              <p className="col-span-10">
+                List of found vulnerabilities with their security scores
+              </p>
+              {writeAccess && (
+                <button
+                  className="col-span-2 w-full bg-red-normal text-white rounded-sm h-12 hover:bg-red-light float-right"
+                  onClick={() => setShare(true)}>
+                  Share
+                </button>
+              )}
+            </div>
+            <h2
+              className={
+                scanState.state === 'FINISHED' && packagesWithVulnerabilities.length === 0
+                  ? 'text-xl'
+                  : 'hidden'
+              }>
+              No vulnerabilities found
+            </h2>
+            <h2
+              className={
+                scanState.state === 'PROGRESS' || scanState.state === 'STARTED'
+                  ? 'text-xl'
+                  : 'hidden'
+              }>
+              Scanning in progress, try again later.
+            </h2>
             {scanState.state !== 'PROGRESS' && scanState.state !== 'STARTED'
-              ? packagesWithoutVulnerabilities.map((element) => (
-                  <ResultRow
-                    element={element}
-                    isWithVulnerabilities={false}
-                    key={element.version}
-                    index={index++}
-                  />
+              ? packagesWithVulnerabilities.map((element) => (
+                  <ResultRow element={element} isWithVulnerabilities={true} key={element.version} />
                 ))
               : ''}
-          </div>
+            <div className="grid grid-cols-12 gap-4">
+              <button
+                className="col-span-2 w-full bg-red-normal text-white rounded-sm h-12 hover:bg-red-light"
+                onClick={toggleDropdown}>
+                {isOpen ? 'Hide all dependencies' : 'Show all dependencies'}
+              </button>
+            </div>
+            {isOpen && (
+              <div onClick={closeDropdown}>
+                {scanState.state !== 'PROGRESS' && scanState.state !== 'STARTED'
+                  ? packagesWithoutVulnerabilities.map((element) => (
+                      <ResultRow
+                        element={element}
+                        isWithVulnerabilities={false}
+                        key={element.version}
+                        index={index++}
+                      />
+                    ))
+                  : ''}
+              </div>
+            )}
+            <ResultsComment scanResultId={params.id}></ResultsComment>
+            <div className="w-full mb-10 invisible"></div>
+          </>
         )}
-        <ResultsComment scanResultId={params.id}></ResultsComment>
-        <div className="w-full mb-10 invisible"></div>
       </div>
     </div>
   ) : (
