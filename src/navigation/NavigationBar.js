@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
 import { ENDPOINTS, ROUTES } from '../miscellanous/Constants';
@@ -17,6 +17,7 @@ export default function NavigationBar() {
   const [showNotifications, setShowNotifications] = useState(false);
   const { keycloak } = useKeycloak();
   const location = useLocation();
+  const timerIdRef = useRef(null);
   let isLogged = location.pathname != ROUTES.WELCOME;
 
   let notSelectedColor = 'text-white';
@@ -43,9 +44,30 @@ export default function NavigationBar() {
     }
 
     setActiveView(currentView);
-
-    fetchNotifications();
+    if (keycloak?.authenticated) {
+      fetchNotifications();
+    }
   }, [location.pathname]);
+
+  useEffect(() => {
+    const startPolling = () => {
+      timerIdRef.current = setInterval(fetchNotifications, 30000);
+    };
+
+    const stopPolling = () => {
+      clearInterval(timerIdRef.current);
+    };
+
+    if (keycloak?.authenticated) {
+      startPolling();
+    } else {
+      stopPolling();
+    }
+
+    return () => {
+      stopPolling();
+    };
+  }, []);
 
   async function fetchNotifications() {
     await axios({
