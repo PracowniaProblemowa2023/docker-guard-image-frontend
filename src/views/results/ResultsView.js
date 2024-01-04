@@ -12,7 +12,6 @@ import Share from './Share';
 export default function ResultsView() {
   const params = useParams();
   const { keycloak } = useKeycloak();
-  const [scanState, setScanState] = useState(null);
   const [scanResult, setScanResult] = useState(null);
   const [share, setShare] = useState(false);
   const [packagesWithVulnerabilities, setPackagesWithVulnerabilities] = useState(null);
@@ -21,27 +20,6 @@ export default function ResultsView() {
   const [writeAccess, setWriteAccess] = useState(false);
 
   let index = 0;
-
-  async function getScanState() {
-    await axios({
-      method: 'get',
-      url: ENDPOINTS.SCAN_STATE + '?id=' + params.id,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${keycloak.token}`
-      }
-    })
-      .then(({ data }) => {
-        setScanState(data);
-      })
-      .catch((error) => {
-        if (error.response) {
-          setErrorCode(error.response.status);
-        } else {
-          setErrorCode(ERROR.UNKNOWN);
-        }
-      });
-  }
 
   async function getScanResult() {
     await axios({
@@ -77,7 +55,6 @@ export default function ResultsView() {
   }
 
   useEffect(() => {
-    getScanState();
     getScanResult();
   }, []);
 
@@ -95,7 +72,9 @@ export default function ResultsView() {
     ThrowError(errorCode);
   }
 
-  return scanResult !== null ? (
+  return (scanResult !== null &&
+    packagesWithVulnerabilities !== null &&
+    packagesWithoutVulnerabilities !== null) ? (
     <div className="w-full h-full flex flex-col">
       {share ? <Share setShare={setShare} /> : null}
       <div className="flex h-full flex-col gap-4">
@@ -104,7 +83,7 @@ export default function ResultsView() {
           <span className="text-red-normal">{' ' + scanResult.imageName + ' '}</span>
           image
         </h1>
-        {scanState.state === 'ERROR' ? (
+        {scanResult.result === 'ERROR' ? (
           <>
             <h1>
               Sorry, but scan has ended with error. Currently, we can&apos;t provide the information
@@ -130,7 +109,7 @@ export default function ResultsView() {
             </div>
             <h2
               className={
-                scanState.state === 'FINISHED' && packagesWithVulnerabilities.length === 0
+                scanResult.result === 'FINISHED' && packagesWithVulnerabilities.length === 0
                   ? 'text-xl'
                   : 'hidden'
               }>
@@ -138,13 +117,13 @@ export default function ResultsView() {
             </h2>
             <h2
               className={
-                scanState.state === 'PROGRESS' || scanState.state === 'STARTED'
+                scanResult.result === 'PROGRESS' || scanResult.result === 'STARTED'
                   ? 'text-xl'
                   : 'hidden'
               }>
               Scanning in progress, try again later.
             </h2>
-            {scanState.state !== 'PROGRESS' && scanState.state !== 'STARTED'
+            {scanResult.result !== 'PROGRESS' && scanResult.result !== 'STARTED'
               ? packagesWithVulnerabilities.map((element) => (
                   <ResultRow element={element} isWithVulnerabilities={true} key={element.version} />
                 ))
@@ -158,7 +137,7 @@ export default function ResultsView() {
             </div>
             {isOpen && (
               <div onClick={closeDropdown}>
-                {scanState.state !== 'PROGRESS' && scanState.state !== 'STARTED'
+                {scanResult.result !== 'PROGRESS' && scanResult.result !== 'STARTED'
                   ? packagesWithoutVulnerabilities.map((element) => (
                       <ResultRow
                         element={element}

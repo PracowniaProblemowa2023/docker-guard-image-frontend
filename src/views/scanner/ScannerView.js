@@ -19,7 +19,7 @@ export default function ScannerView() {
 
   function validateImageInput(value) {
     setValidationError(false);
-    const dockerImageRegex = /^([a-zA-Z0-9.-]+\/)?([a-zA-Z0-9_-]+)(:([a-zA-Z0-9_.-]+))?$/;
+    const dockerImageRegex = /^([a-z0-9.-]+\/)?([a-z0-9_-]+)(:([a-z0-9_.-]+))?$/;
     const match = value.match(dockerImageRegex);
     return match;
   }
