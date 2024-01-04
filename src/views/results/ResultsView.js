@@ -57,7 +57,7 @@ export default function ResultsView() {
         let withVulerabilities = [];
         let withoutVulerabilities = [];
         data.payloads.forEach((element) => {
-          if (element.packageThreatsCve.length !== 0) {
+          if (element.packageThreatsOsv.length !== 0 || element.packageThreatsCve.length !== 0) {
             withVulerabilities.push(element);
           } else {
             withoutVulerabilities.push(element);
