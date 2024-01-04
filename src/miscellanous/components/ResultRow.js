@@ -4,9 +4,11 @@ import PropTypes from 'prop-types';
 import Spinner from '../Components';
 
 export default function ResultRow({ element, isWithVulnerabilities, index }) {
+  const [vulnerabilitiesOsv, setVulnerabilitiesOsv] = useState(null);
   const [vulnerabilitiesCve, setVulnerabilitiesCve] = useState(null);
 
   async function getVulnerabilities() {
+    setVulnerabilitiesOsv(element.packageThreatsOsv);
     setVulnerabilitiesCve(element.packageThreatsCve);
   }
 
@@ -14,7 +16,7 @@ export default function ResultRow({ element, isWithVulnerabilities, index }) {
     getVulnerabilities();
   }, []);
 
-  return vulnerabilitiesCve !== null ? (
+  return vulnerabilitiesOsv !== null && vulnerabilitiesCve !== null ? (
     <div>
       <div
         className={
@@ -57,6 +59,9 @@ export default function ResultRow({ element, isWithVulnerabilities, index }) {
           Severity
         </div>
       </div>
+      {vulnerabilitiesOsv.map((element) => (
+        <ResultDetailRow element={element} key={element.osvId} />
+      ))}
       {vulnerabilitiesCve.map((element) => (
         <ResultDetailRow element={element} key={element.osvId} />
       ))}
