@@ -72,7 +72,7 @@ export default function NavigationBar() {
   async function fetchNotifications() {
     await axios({
       method: 'get',
-      url: ENDPOINTS.NOTIFICATIONS,
+      url: ENDPOINTS.NOTIFICATIONS + '?size=200',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${keycloak.token}`
@@ -88,27 +88,19 @@ export default function NavigationBar() {
   }
 
   function groupNotifications(allNotifications) {
-    const storedNotificationsViewTime = localStorage.getItem('notificationsViewTime');
+    const storedNotificationsLastId = localStorage.getItem('notificationsLastId');
 
-    let parsedNotificationsViewTime;
-
-    if (storedNotificationsViewTime != null) {
-      parsedNotificationsViewTime = new Date(JSON.parse(storedNotificationsViewTime));
-    } else {
-      parsedNotificationsViewTime = new Date(0);
-    }
+    let notificationsLastId = storedNotificationsLastId != null ? storedNotificationsLastId : -1;
 
     setNewNotifications(
       allNotifications.filter((notif) => {
-        const notifTime = new Date(notif.date);
-        return notifTime > parsedNotificationsViewTime;
+        return notif.id > notificationsLastId;
       })
     );
 
     setOldNotifications(
       allNotifications.filter((notif) => {
-        const notifTime = new Date(notif.date);
-        return notifTime < parsedNotificationsViewTime;
+        return notif.id <= notificationsLastId;
       })
     );
   }
