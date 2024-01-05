@@ -18,13 +18,23 @@ export default function NotificationList({
     return navigate(ROUTES.RESULTS + '/' + elementId);
   }
 
-  function updateNotificationsLastViewTime() {
-    localStorage.setItem('notificationsViewTime', JSON.stringify(new Date()));
+  function updateNotificationsLastId() {
+    const storedNotificationsLastId =
+      localStorage.getItem('notificationsLastId') != null
+        ? localStorage.getItem('notificationsLastId')
+        : -1;
+
+    if (allNotifications.length != 0) {
+      if (storedNotificationsLastId < allNotifications[0].id) {
+        localStorage.setItem('notificationsLastId', allNotifications[0].id);
+      }
+    }
+
     groupNotifications(allNotifications);
   }
 
-  function updateNotificationsLastViewTimeAndNavigate(elementId) {
-    updateNotificationsLastViewTime();
+  function updateNotificationsLastIdAndNavigate(elementId) {
+    updateNotificationsLastId();
     navigateToResults(elementId);
   }
 
@@ -33,10 +43,10 @@ export default function NotificationList({
       <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
         <div className="flex h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-          <div className="relative transform overflow-hidden rounded-lg bg-whitetext-left shadow-xl transition-all w-1/3">
-            <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4 w-full">
-              <div className="sm:flex flex-col sm:items-start">
-                <div className="flex flex-row justify-between">
+          <div className="relative transform overflow-hidden rounded-lg bg-whitetext-left shadow-xl transition-all w-5/12 h-1/2">
+            <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4 w-full h-full overflow-y-auto">
+              <div className="sm:flex flex-col sm:items-center">
+                <div className="flex flex-row justify-between w-full">
                   <div className="pt-3 w-full text-center sm:mt-0 sm:text-left">
                     <h1
                       className="text-2xl font-semibold leading-6 text-gray-900 "
@@ -54,7 +64,7 @@ export default function NotificationList({
                     className="oc se w-6 h-6 absolute right-5 cursor-pointer"
                     onClick={() => {
                       setShowNotifications(false);
-                      updateNotificationsLastViewTime();
+                      updateNotificationsLastId();
                     }}>
                     <path
                       strokeLinecap="round"
@@ -69,7 +79,7 @@ export default function NotificationList({
                     New
                   </h3>
                 </div>
-                <div className="flex flex-col items-center w-full justify-center">
+                <div className="flex flex-col items-center w-full justify-center ">
                   {newNotifications.map((notification) => (
                     <Notification
                       key={notification.id}
@@ -78,7 +88,7 @@ export default function NotificationList({
                       message={notification.message}
                       bg={'bg-white'}
                       elementId={notification.elementId}
-                      goToElement={updateNotificationsLastViewTimeAndNavigate}
+                      goToElement={updateNotificationsLastIdAndNavigate}
                     />
                   ))}
                 </div>
@@ -89,7 +99,7 @@ export default function NotificationList({
                     Old
                   </h3>
                 </div>
-                <div className="flex flex-col items-center w-full justify-center">
+                <div className="flex flex-col items-center justify-center w-11/12">
                   {oldNotifications.map((notification) => (
                     <Notification
                       key={notification.id}
@@ -97,16 +107,16 @@ export default function NotificationList({
                       message={notification.message}
                       bg={'bg-gray-300'}
                       elementId={notification.elementId}
-                      goToElement={updateNotificationsLastViewTimeAndNavigate}
+                      goToElement={updateNotificationsLastIdAndNavigate}
                     />
                   ))}
                 </div>
               </div>
-              <div className="bg-gray-50 py-3 sm:flex sm:flex-row-reverse">
+              <div className="bg-white py-3 sm:flex sm:flex-row-reverse">
                 <button
                   onClick={() => {
                     setShowNotifications(false);
-                    updateNotificationsLastViewTime();
+                    updateNotificationsLastId();
                   }}
                   type="button"
                   className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">
